@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "node dist/test.js",
+    "dev": "node dist/index.js",
     "watch": "tsc -w",
     "build": "tsc"
   },
