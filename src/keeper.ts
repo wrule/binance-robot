@@ -9,7 +9,15 @@ class Keeper {
   private timer!: number;
 
   private tick(time: Moment) {
-    console.log(time.format('HH:mm:ss'));
+    const seconds = time.diff(time.clone().startOf('year'), 'seconds');
+    const num = seconds % 3600;
+    const diff = 3600 - num;
+    if (num <= 5) {
+      console.log('关闭', time.format('YYYY-MM-DD HH:mm:ss'));
+    }
+    if (diff <= 5) {
+      console.log('开启', time.format('YYYY-MM-DD HH:mm:ss'));
+    }
   }
 
   public Start() {
