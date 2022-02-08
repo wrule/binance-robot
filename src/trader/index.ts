@@ -8,7 +8,7 @@ const binance = new Binance().options({
   APISECRET: secretJson.APISECRET,
 });
 
-interface IFrame {
+export interface IFrame {
   time: Moment,
   open: number,
   close: number,
@@ -19,12 +19,10 @@ interface IFrame {
 }
 
 export
-class Trader {
+abstract class Trader {
   public constructor(
     private symbol: string,
     private interval: string,
-    private errorLimit = 10,
-    private retryInterval = 10000,
   ) { }
 
   private endpoint!: string;
@@ -48,6 +46,12 @@ class Trader {
     return result;
   }
 
+  protected abstract watch(
+    symbol: string,
+    interval: string,
+    frames: IFrame[],
+  ): void;
+
   private callback(
     symbol: string,
     interval: string,
@@ -60,11 +64,11 @@ class Trader {
     ) {
       return;
     }
-    const list = this.chartToFrames(chart);
-    if (list.length < 1) {
+    const frames = this.chartToFrames(chart);
+    if (frames.length < 1) {
       return;
     }
-    console.log(list[list.length - 1]);
+    this.watch(symbol, interval, frames);
   }
 
   public Start() {

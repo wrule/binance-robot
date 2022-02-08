@@ -35,8 +35,9 @@ const binance = new Binance().options({
 });
 
 import { Trader } from './trader';
-const trader1 = new Trader('ETHUSDT', '1d');
-const trader2 = new Trader('ETHUSDT', '1m');
+import { DoubleLineCross } from './trader/ doubleLineCross';
+import { DoubleLineCrossMA } from './trader/ doubleLineCrossMA';
+const trader1 = new DoubleLineCrossMA('ETHUSDT', '1d');
 trader1.Start();
 // trader2.Start();
 
