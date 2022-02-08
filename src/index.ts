@@ -1,7 +1,7 @@
 import { Keeper } from './keeper';
 
 const keeper = new Keeper();
-keeper.Start();
+// keeper.Start();
 
 function aaa(text: string) {
   const execResult = /\d+/.exec(text);
@@ -23,3 +23,44 @@ function aaa(text: string) {
 }
 
 console.log(aaa('8w'));
+
+import Binance from 'node-binance-api';
+import secretJson from './.secret.json';
+import moment, { Moment } from 'moment';
+
+const binance = new Binance().options({
+  APIKEY: secretJson.APIKEY,
+  APISECRET: secretJson.APISECRET,
+});
+
+binance.websockets.chart('ETHUSDT', '1d', (symbol: any, interval: any, chart: any) => {
+  let list = chartToFrames(chart);
+  // list = list.filter((item) => item.isFinal);
+  console.log(list[0]);
+  // console.log(chart);
+});
+
+interface IFrame {
+  time: Moment,
+  open: number,
+  close: number,
+  high: number,
+  low: number,
+  volume: number,
+  isFinal: boolean,
+}
+
+function chartToFrames(chart: any) {
+  return Object.entries(chart)
+    .map(([key, value]) => ({ time: Number(key), data: value as any }))
+    .sort((a, b) => a.time - b.time)
+    .map((item) => ({
+      time: moment(new Date(item.time)),
+      open: Number(item.data.open),
+      close: Number(item.data.close),
+      high: Number(item.data.high),
+      low: Number(item.data.low),
+      volume: Number(item.data.volume),
+      isFinal: item.data.isFinal !== false,
+    } as IFrame));
+}
