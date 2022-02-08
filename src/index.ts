@@ -23,7 +23,7 @@ function aaa(text: string) {
   throw new Error('b');
 }
 
-console.log(aaa('8w'));
+// console.log(aaa('8w'));
 
 import Binance from 'node-binance-api';
 import secretJson from './.secret.json';
@@ -34,14 +34,12 @@ const binance = new Binance().options({
   APISECRET: secretJson.APISECRET,
 });
 
-binance.websockets.chart('ETHUSDT', '1d', (symbol: any, interval: any, chart: any) => {
-  let list = chartToFrames(chart);
-  list = list.filter((item) => item.isFinal);
-  const n = nums(list.map((item) => item.close));
-  const MAFast = n.MA(12);
-  const MASlow = n.MA(21);
-  // console.log(chart);
-});
+import { Trader } from './trader';
+const trader1 = new Trader('ETHUSDT', '1d');
+const trader2 = new Trader('ETHUSDT', '1m');
+trader1.Start();
+// trader2.Start();
+
 
 interface IFrame {
   time: Moment,
