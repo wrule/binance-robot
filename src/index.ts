@@ -1,4 +1,5 @@
 import { Keeper } from './keeper';
+import { nums } from '@wrule/nums';
 
 const keeper = new Keeper();
 // keeper.Start();
@@ -35,8 +36,10 @@ const binance = new Binance().options({
 
 binance.websockets.chart('ETHUSDT', '1d', (symbol: any, interval: any, chart: any) => {
   let list = chartToFrames(chart);
-  // list = list.filter((item) => item.isFinal);
-  console.log(list[0]);
+  list = list.filter((item) => item.isFinal);
+  const n = nums(list.map((item) => item.close));
+  const MAFast = n.MA(12);
+  const MASlow = n.MA(21);
   // console.log(chart);
 });
 
@@ -51,7 +54,7 @@ interface IFrame {
 }
 
 function chartToFrames(chart: any) {
-  return Object.entries(chart)
+  const result = Object.entries(chart)
     .map(([key, value]) => ({ time: Number(key), data: value as any }))
     .sort((a, b) => a.time - b.time)
     .map((item) => ({
@@ -63,4 +66,8 @@ function chartToFrames(chart: any) {
       volume: Number(item.data.volume),
       isFinal: item.data.isFinal !== false,
     } as IFrame));
+  if (result.length > 0) {
+    result[result.length - 1].isFinal = false;
+  }
+  return result;
 }

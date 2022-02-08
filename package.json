@@ -11,6 +11,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@wrule/nums": "^0.2.1",
     "binance-api-node": "^0.11.31",
     "moment": "^2.29.1",
     "node-binance-api": "^0.13.1"
