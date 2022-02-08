@@ -29,8 +29,6 @@ class Trader {
 
   private endpoint!: string;
 
-  private errorCount = 0;
-
   private chartToFrames(chart: any) {
     const result = Object.entries(chart)
       .map(([key, value]) => ({ time: Number(key), data: value as any }))
@@ -50,21 +48,6 @@ class Trader {
     return result;
   }
 
-  private increaseErrorCount() {
-    this.errorCount++;
-    if (this.errorCount > this.errorLimit) {
-      this.Stop();
-      console.log('重试...');
-      setTimeout(() => {
-        this.Start();
-      }, this.retryInterval);
-    }
-  }
-
-  private clearErrorCount() {
-    this.errorCount = 0;
-  }
-
   private callback(
     symbol: string,
     interval: string,
@@ -75,15 +58,12 @@ class Trader {
       interval !== this.interval ||
       Object.prototype.toString.call(chart) !== '[object Object]'
     ) {
-      this.increaseErrorCount();
       return;
     }
     const list = this.chartToFrames(chart);
     if (list.length < 1) {
-      this.increaseErrorCount();
       return;
     }
-    this.clearErrorCount();
     console.log(list[list.length - 1]);
   }
 
